@@ -7,3 +7,40 @@
 @keyframes wave{50%{transform:translateY(4px) scaleX(.97)}}@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes shake{25%{transform:rotate(4deg)}50%{transform:rotate(-4deg)}75%{transform:rotate(2deg)}}@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:800px){.title-loader{font-size:13vw}.progress-row{width:78vw}.loading-note{right:5vw}.topbar{height:76px}.top-actions>span{display:none}.legend{position:relative;top:0;width:100%;min-width:0;height:auto;padding:24px 6vw;border-right:0;border-bottom:1px solid rgba(0,0,0,.14)}.legend h2{font-size:25px;margin:6px 0 18px}.legend-list{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}.legend-list button{display:block;text-align:center;padding:7px 1px;border:0}.legend-list i{display:block;width:100%;height:5px;margin-bottom:7px}.legend-list span{font-size:10px}.legend-list small,.hint{display:none}.bottle-stage{position:relative;left:0;top:0;height:calc(100svh - 245px);min-height:450px}.bottle-label{left:6vw;top:6%;font-size:14px}.bottle-button{width:min(86vw,480px)}.reveal-actions{flex-wrap:wrap;justify-content:center}.paper-copy{inset:18% 14%}.paper-copy p{display:none}.detail-nav{height:76px;padding:0 5vw}.detail-nav nav button:first-child{display:none}.movie-menu{inset:76px 0 0;grid-template-columns:repeat(2,1fr)}.detail-hero{grid-template-columns:1fr;padding:9vh 7vw}.hero-number{font-size:55px;padding:0}.detail-hero h1{font-size:11vw}.movie-article{grid-template-columns:1fr;padding:8vh 6vw}.essay{padding-top:0}.essay section{position:static;margin-bottom:6vh}.essay blockquote{margin:7vh 0}.image-stack{gap:4vh}.next-list button{grid-template-columns:55px 1fr 30px}.loading-copy{transform:none}.start-button{width:92px;height:92px}.loading-note{font-size:10px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Layout refinements: keep copy, imagery and long-form reading in distinct lanes. */
+@media(min-width:801px){
+  .raffle-scene{height:100svh;min-height:680px;overflow:hidden}
+  .legend{display:flex;flex-direction:column;padding:clamp(30px,5vh,56px) clamp(24px,3.2vw,56px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(64,59,46,.24) transparent}
+  .legend h2{margin:10px 0 clamp(18px,2.5vh,30px);font-size:clamp(30px,2.7vw,48px)}
+  .legend-list{flex:0 0 auto}
+  .legend-list button{padding:clamp(8px,1.2vh,13px) 0}
+  .hint{position:static;margin:auto 0 0;padding:22px 0 0;border-top:1px solid rgba(30,33,29,.18);font-size:11px;line-height:1.85}
+  .bottle-stage{display:grid;grid-template-columns:minmax(230px,30%) minmax(0,1fr);gap:clamp(18px,3vw,54px);padding:clamp(30px,5vh,70px) clamp(36px,5vw,88px);align-items:center;justify-items:center}
+  .bottle-label{position:relative;left:auto;top:auto;width:100%;max-width:320px;align-self:center;justify-self:end;padding:26px 0;border-top:1px solid rgba(44,43,34,.24);border-bottom:1px solid rgba(44,43,34,.24);font-size:clamp(18px,1.7vw,28px);line-height:1.75;letter-spacing:.06em;z-index:4}
+  .bottle-label span{margin-bottom:14px}
+  .bottle-button{grid-column:2;width:min(42vw,600px);max-width:100%;justify-self:center}
+  .orbit{grid-column:2;pointer-events:none}
+}
+
+.movie-article{align-items:start;grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);gap:clamp(52px,7vw,120px)}
+.essay{padding-top:2vh;min-width:0}
+.essay section{position:static;top:auto;margin:0 0 clamp(64px,9vh,110px)}
+.essay h2{margin:18px 0 30px;line-height:1.35;overflow-wrap:anywhere}
+.essay section>p:last-child{margin:0;font-size:clamp(15px,1.15vw,18px);font-weight:400;line-height:2.1;letter-spacing:.02em;overflow-wrap:anywhere}
+.essay blockquote{position:static;margin:clamp(62px,9vh,110px) 0;padding:clamp(28px,4vh,48px) 0;font-size:clamp(22px,2.1vw,34px);line-height:1.65;overflow-wrap:anywhere}
+
+@media(max-width:1100px) and (min-width:801px){
+  .legend{min-width:230px;width:24%}
+  .bottle-stage{left:24%;grid-template-columns:minmax(185px,32%) minmax(0,1fr);padding-inline:28px}
+  .bottle-label{font-size:18px}
+  .movie-article{grid-template-columns:minmax(0,1fr) minmax(300px,.82fr);padding-inline:6vw;gap:5vw}
+}
+
+@media(max-width:800px){
+  .raffle-scene{overflow:auto}
+  .bottle-stage{display:flex;padding:30px 5vw 18px}
+  .bottle-label{position:absolute;left:6vw;top:5%;width:min(46vw,220px);padding:12px 0;font-size:13px;line-height:1.65;z-index:4}
+  .movie-article{grid-template-columns:1fr;gap:7vh}
+  .essay section{margin-bottom:7vh}
+}

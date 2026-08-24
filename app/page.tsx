@@ -47,6 +47,7 @@ export default function Home() {
   const [muted, setMuted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
+  const audioPreloads = useRef<HTMLAudioElement[]>([]);
 
   useEffect(() => {
     const start = performance.now(); let frame = 0;
@@ -55,19 +56,35 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    audioPreloads.current = series.map((item) => {
+      const track = new Audio(`/assets/audio/${encodeURIComponent(item.music)}`);
+      track.preload = 'auto';
+      track.load();
+      return track;
+    });
+    return () => audioPreloads.current.forEach((track) => { track.pause(); track.src = ''; });
+  }, []);
+
+  useEffect(() => {
     if (!audio.current || scene === 'loading') return;
     const movie = scene === 'detail' ? detail : picked;
     const src = `/assets/audio/${encodeURIComponent(series[movie?.series ?? 4].music)}`;
-    if (!audio.current.src.endsWith(src)) audio.current.src = src;
-    audio.current.volume = .28; audio.current.muted = muted; audio.current.play().catch(()=>{});
+    if (audio.current.dataset.track !== src) {
+      audio.current.dataset.track = src;
+      audio.current.src = src;
+      audio.current.load();
+    }
+    audio.current.volume = .28;
+    audio.current.muted = muted;
+    audio.current.play().catch(()=>{});
   }, [scene, detail, picked, muted]);
 
   const related = useMemo(()=>movies.filter(m=>m.series===detail.series && m.title!==detail.title),[detail]);
-  const enterRaffle = () => { setScene('raffle'); setPicked(null); setTimeout(()=>audio.current?.play().catch(()=>{}),50); };
+  const enterRaffle = () => { setScene('raffle'); setPicked(null); audio.current?.play().catch(()=>{}); };
   const draw = () => { let next=movies[Math.floor(Math.random()*movies.length)]; if(picked && movies.length>1) while(next.title===picked.title) next=movies[Math.floor(Math.random()*movies.length)]; setPicked(next); };
   const openDetail = (m:Movie) => { setDetail(m); setScene('detail'); setPicked(null); window.scrollTo({top:0,behavior:'smooth'}); };
 
-  return <main><audio ref={audio} loop />
+  return <main><audio ref={audio} loop preload="auto" />
     {scene==='loading' && <section className="loading-scene"><video className="loading-video" autoPlay muted loop playsInline><source src="/assets/loading/background.mp4" type="video/mp4"/></video><div className="loading-shade"/><div className="loading-copy"><div className="title-loader" aria-label={`电影回忆录，加载 ${progress}%`}><span className="title-base">电影回忆录</span><span className="title-fill" style={{clipPath:`inset(${100-progress}% 0 0 0)`}}>电影回忆录</span><span className="waterline" style={{top:`${100-progress}%`}}/></div><div className="progress-row"><span>LOADING</span><i><b style={{width:`${progress}%`}}/></i><span>{String(progress).padStart(3,'0')}%</span></div>{progress===100 && <button className="start-button" onClick={enterRaffle}><span>开始</span><small>ENTER</small></button>}</div><p className="loading-note">一个记录我看过的电影<br/>同时向大家推荐好电影的网站</p></section>}
 
     {scene==='raffle' && <section className="raffle-scene"><header className="topbar"><button className="brand" onClick={()=>setScene('loading')}>电影回忆录<small>MOVIE MEMOIR</small></button><div className="top-actions"><span>不知道看什么？</span><button className="sound" onClick={()=>setMuted(!muted)}>{muted?'♫ OFF':'♫ ON'}</button></div></header><aside className="legend"><p className="eyebrow">FIVE COLLECTIONS</p><h2>五种电影<br/>五种心情</h2><div className="legend-list">{series.map((s,i)=><button key={s.name} onClick={()=>{const pool=movies.filter(m=>m.series===i);setPicked(pool[Math.floor(Math.random()*pool.length)])}}><i style={{background:s.color}}/><span>{s.name}<small>{movies.filter(m=>m.series===i).length} 部收藏</small></span></button>)}</div><p className="hint">不知道看什么电影时<br/>点击玻璃瓶，随机抽取一部。</p></aside><div className="bottle-stage"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><p className="bottle-label"><span>SHAKE</span>摇一摇<br/>让电影替今晚做决定</p><button className="bottle-button" onClick={draw} aria-label="点击玻璃瓶随机抽取电影"><img src="/assets/raffle/%E7%93%B6%E5%AD%90.png" alt="装着五色纸卷的玻璃瓶"/><span>点击抽取</span></button></div>{picked && <div className="reveal" role="dialog" aria-modal="true"><button className="reveal-close" onClick={()=>setPicked(null)}>关闭 ×</button><div className="paper-wrap"><img src={`/assets/raffle/${encodeURIComponent(series[picked.series].paper)}`} alt="展开的纸卷"/><div className="paper-copy"><span style={{color:series[picked.series].color}}>{series[picked.series].name} · 今晚推荐</span><button onClick={()=>openDetail(picked)}>{picked.title}</button><p>{picked.line}</p></div></div><div className="reveal-actions"><button className="primary" onClick={()=>openDetail(picked)}>跳转电影介绍 <span>↗</span></button><button onClick={draw}>再摇一次</button><button onClick={()=>setPicked(null)}>返回摇摇乐</button></div></div>}</section>}
