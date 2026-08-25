@@ -44,3 +44,28 @@
   .movie-article{grid-template-columns:1fr;gap:7vh}
   .essay section{margin-bottom:7vh}
 }
+
+/* Paper reveal: keep every title centered inside the illustrated scroll. */
+.paper-wrap{width:min(900px,90vw)}
+.paper-wrap>img{max-height:58vh}
+.paper-copy{inset:27% 15% 36%;justify-content:center;overflow:visible}
+.paper-copy>span{position:absolute;top:-16px;left:0;right:0;text-align:center}
+.paper-copy button{display:flex;align-items:center;justify-content:center;width:100%;height:100%;margin:0;padding:0 3%;font-size:clamp(26px,3.7vw,52px);line-height:1.08;letter-spacing:.015em;white-space:nowrap}
+.paper-copy p{position:absolute;top:calc(100% + 28px);left:-5%;width:110%;margin:0}
+
+/* Film pages grow with the source image instead of cropping it to the viewport. */
+.image-stack img{height:auto;max-height:none;object-fit:contain;background:rgba(26,27,22,.05)}
+.image-stack figure{overflow:visible}
+
+/* Prefer a calm, single-line title treatment whenever desktop width allows it. */
+.detail-hero{grid-template-columns:minmax(150px,12vw) minmax(0,1fr)}
+.detail-hero h1{max-width:none;margin:20px 0 24px;font-size:clamp(42px,4.7vw,82px);line-height:1.16;letter-spacing:.015em;white-space:nowrap;text-wrap:nowrap}
+
+@media(max-width:800px){
+  .paper-wrap{width:min(760px,94vw)}
+  .paper-wrap>img{max-height:56vh}
+  .paper-copy{inset:25% 11% 35%}
+  .paper-copy button{font-size:clamp(24px,7.4vw,42px)}
+  .paper-copy p{display:none}
+  .detail-hero h1{font-size:clamp(38px,10vw,64px);line-height:1.22;white-space:normal;text-wrap:balance}
+}
